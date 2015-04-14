@@ -1346,7 +1346,7 @@ int64_t GetDGBSubsidy(int nHeight) {
    	}
    	else
    	{
-	    qSubsidy = 2459*COIN;
+   		qSubsidy = 2459*COIN;
    		int blocks = nHeight - alwaysUpdateDiffChangeTarget;
    		int weeks = (blocks / patchBlockRewardDuration2)+1;
    		//decrease reward by 1% every month
@@ -1401,7 +1401,7 @@ int64_t GetBlockValue(int nHeight, int64_t nFees)
 //
 unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime)
 {
- return Params().ProofOfWorkLimit(ALGO_SHA256D).GetCompact();
+	return Params().ProofOfWorkLimit(ALGO_SHA256D).GetCompact();
 }
 
 static unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, int algo)
@@ -1561,7 +1561,6 @@ static unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const C
 
     if (bnNew > Params().ProofOfWorkLimit(algo))
     {
-        LogPrintf("terry: bnNew > Params().ProofOfWorkLimit(algo)\n");
         bnNew = Params().ProofOfWorkLimit(algo);
     }
 
@@ -1626,6 +1625,7 @@ static unsigned int GetNextWorkRequiredV3(const CBlockIndex* pindexLast, const C
 
     // Per-algo retarget
     int nAdjustments = pindexPrevAlgo->nHeight - pindexLast->nHeight + NUM_ALGOS - 1;
+
     if (nAdjustments > 0)
     {
         for (int i = 0; i < nAdjustments; i++)
@@ -1648,7 +1648,7 @@ static unsigned int GetNextWorkRequiredV3(const CBlockIndex* pindexLast, const C
 
     /// debug print
     LogPrintf("GetNextWorkRequired RETARGET\n");
-    LogPrintf("nTargetTimespan = %d    nActualTimespan = %d\n", nTargetTimespan, nActualTimespan);
+    LogPrintf("nAveragingTargetTimespan = %d    nActualTimespan = %d\n", nAveragingTargetTimespan, nActualTimespan);
     LogPrintf("Before: %08x  %s\n", pindexLast->nBits, CBigNum().SetCompact(pindexPrevAlgo->nBits).getuint256().ToString());
     LogPrintf("After:  %08x  %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString());
 
@@ -1753,7 +1753,7 @@ static unsigned int GetNextWorkRequiredV4(const CBlockIndex* pindexLast, const C
 
     if(log)
 	{
-	    LogPrintf("nAveragingTargetTimespanBlockTime = %d; nActualTimespan = %d\n", nAveragingTargetTimespanV4, nActualTimespan);
+	    LogPrintf("nAveragingTargetTimespanV4 = %d; nActualTimespan = %d\n", nAveragingTargetTimespanV4, nActualTimespan);
 	    LogPrintf("Before: %08x  %s\n", pindexPrevAlgo->nBits, CBigNum().SetCompact(pindexPrevAlgo->nBits).getuint256().ToString());
 	    LogPrintf("After:  %08x  %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString());
 	}
@@ -3100,7 +3100,7 @@ bool ProcessBlock(CValidationState &state, CNode* pfrom, CBlock* pblock, CDiskBl
 
     if(pfrom)
     {
-        if (CheckBlockOnly(*pblock, state))
+        if(CheckBlockOnly(*pblock, state))
         {
             LOCK(cs_vNodes);
             BOOST_FOREACH(CNode* pnode, vNodes)
@@ -3115,7 +3115,9 @@ bool ProcessBlock(CValidationState &state, CNode* pfrom, CBlock* pblock, CDiskBl
             }
         }
         else
+        {
         	return error("ProcessBlock() : CheckBlockOnly FAILED");
+        }
     }
 
     // Preliminary checks
@@ -4242,19 +4244,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
                     if (inv.type == MSG_BLOCK)
                     {
                     	AddBlockToQueue(pfrom->GetId(), inv.hash);
-/*
-                    	LOCK(cs_vNodes);
-                        BOOST_FOREACH(CNode* pnode, vNodes)
-                        {
-                        	if(pnode->addr==pfrom->addr)
-                        	{
-                        	}
-                        	else
-                        	{
-                        		pnode->PushInventory(CInv(MSG_BLOCK, inv.hash));
-                        	}
-                        }
-*/
                     }
                     else
                         pfrom->AskFor(inv);

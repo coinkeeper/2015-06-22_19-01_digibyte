@@ -341,7 +341,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, int algo)
             CValidationState state;
             if (!CheckInputs(tx, state, view, true, SCRIPT_VERIFY_P2SH))
             {
-                LogPrintf("!CheckInputs(tx, state, view, true, SCRIPT_VERIFY_P2SH)\n");
                 continue;
             }
 
