@@ -160,9 +160,21 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, int algo)
 	{
 		maxBlockSize=MAX_BLOCK_SIZE;
 	}
-	else
+	else if(pindexPrev->nHeight+1<workComputationChangeTarget2)
 	{
 		maxBlockSize=MAX_BLOCK_SIZE_2;
+	}
+	else if(pindexPrev->nHeight+1<workComputationChangeTarget4)
+	{
+		maxBlockSize=MAX_BLOCK_SIZE_4;
+	}
+	else if(pindexPrev->nHeight+1<workComputationChangeTarget6)
+	{
+		maxBlockSize=MAX_BLOCK_SIZE_6;
+	}
+	else
+	{
+		maxBlockSize=MAX_BLOCK_SIZE_8;
 	}
 
 	// Largest block you're willing to create:
@@ -294,20 +306,15 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, int algo)
             unsigned int nTxSigOps = GetLegacySigOpCount(tx);
             if (nBlockSigOps + nTxSigOps >= maxBlockSigops)
             {
-                LogPrintf("terry: nBlockSigOps + nTxSigOps >= maxBlockSigops\n");//for testing
                 continue;
             }
             // Skip free transactions if we're past the minimum block size:
 
 
-            //for testing
-            /*
             if (fSortedByFee && (dFeePerKb < CTransaction::nMinRelayTxFee) && (nBlockSize + nTxSize >= nBlockMinSize))
             {
-                LogPrintf("terry: fSortedByFee && (dFeePerKb < CTransaction::nMinRelayTxFee) && (nBlockSize + nTxSize >= nBlockMinSize)\n");//for testing
                 continue;
             }
-            */
 
             // Prioritize by fee once past the priority size or we run out of high-priority
             // transactions:
@@ -320,7 +327,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, int algo)
 
             if (!view.HaveInputs(tx))
             {
-                LogPrintf("terry: !view.HaveInputs(tx)\n");//for testing
                 continue;
             }
 
@@ -329,7 +335,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, int algo)
             nTxSigOps += GetP2SHSigOpCount(tx, view);
             if (nBlockSigOps + nTxSigOps >= maxBlockSigops)
             {
-                LogPrintf("terry: nBlockSigOps + nTxSigOps >= maxBlockSigops\n");//for testing
                 continue;
             }
 

@@ -45,7 +45,7 @@ static const int64_t nIntervalRe = nTargetTimespanRe / nTargetSpacingRe; // 1 bl
 
 //MultiAlgo Target updates
 static const int64_t multiAlgoTargetSpacing = 30*5; // NUM_ALGOS * 30 seconds
-static const int64_t multiAlgoTargetSpacingV4 = 3*60*5; // NUM_ALGOS * 15 seconds// NUM_ALGOS * 3 mins //for testing
+static const int64_t multiAlgoTargetSpacingV4 = 15*5; // NUM_ALGOS * 15 seconds
 
 static const int64_t nAveragingInterval = 10; // 10 blocks
 static const int64_t nAveragingTargetTimespan = nAveragingInterval * multiAlgoTargetSpacing; // 10* NUM_ALGOS * 30
@@ -55,13 +55,10 @@ static const int64_t nMaxAdjustDown = 40; // 40% adjustment down
 static const int64_t nMaxAdjustUp = 20; // 20% adjustment up
 static const int64_t nMaxAdjustDownV3 = 16; // 16% adjustment down
 static const int64_t nMaxAdjustUpV3 = 8; // 8% adjustment up
-//static const int64_t nMaxAdjustDownV4 = 4; //for testing
-//static const int64_t nMaxAdjustUpV4 = 8; //for testing
-static const int64_t nMaxAdjustDownV4 = 20; //for testing
-static const int64_t nMaxAdjustUpV4 = 20; //for testing
+static const int64_t nMaxAdjustDownV4 = 4;
+static const int64_t nMaxAdjustUpV4 = 8;
 static const int64_t nLocalDifficultyAdjustment = 4; //difficulty adjustment per algo
-//static const int64_t nLocalTargetAdjustment = 4; //target adjustment per algo //for testing
-static const int64_t nLocalTargetAdjustment = 2; //target adjustment per algo //for testing
+static const int64_t nLocalTargetAdjustment = 4; //target adjustment per algo
 
 static const int64_t nMinActualTimespan = nAveragingTargetTimespan * (100 - nMaxAdjustUp) / 100;
 static const int64_t nMaxActualTimespan = nAveragingTargetTimespan * (100 + nMaxAdjustDown) / 100;
@@ -1055,9 +1052,21 @@ void GetMaxBlockSizeByTx(const uint256 &hash, unsigned int &maxBlockSize)
 		{
 			maxBlockSize=MAX_BLOCK_SIZE;
 		}
-		else
+		else if(height<workComputationChangeTarget2)
 		{
 			maxBlockSize=MAX_BLOCK_SIZE_2;
+		}
+		else if(height<workComputationChangeTarget4)
+		{
+			maxBlockSize=MAX_BLOCK_SIZE_4;
+		}
+		else if(height<workComputationChangeTarget6)
+		{
+			maxBlockSize=MAX_BLOCK_SIZE_6;
+		}
+		else
+		{
+			maxBlockSize=MAX_BLOCK_SIZE_8;
 		}
 	}
 	else
@@ -1066,9 +1075,21 @@ void GetMaxBlockSizeByTx(const uint256 &hash, unsigned int &maxBlockSize)
 		{
 			maxBlockSize=MAX_BLOCK_SIZE;
 		}
-		else
+		else if(chainActive.Height()<workComputationChangeTarget2)
 		{
 			maxBlockSize=MAX_BLOCK_SIZE_2;
+		}
+		else if(chainActive.Height()<workComputationChangeTarget4)
+		{
+			maxBlockSize=MAX_BLOCK_SIZE_4;
+		}
+		else if(chainActive.Height()<workComputationChangeTarget6)
+		{
+			maxBlockSize=MAX_BLOCK_SIZE_6;
+		}
+		else
+		{
+			maxBlockSize=MAX_BLOCK_SIZE_8;
 		}
 	}
 }
@@ -2779,9 +2800,21 @@ void GetMaxBlockSizeByBlock(const CBlock &block,unsigned int &maxBlockSize)
 			{
 				maxBlockSize=MAX_BLOCK_SIZE;
 			}
-			else
+			else if(pindex->nHeight<workComputationChangeTarget2)
 			{
 				maxBlockSize=MAX_BLOCK_SIZE_2;
+			}
+			else if(pindex->nHeight<workComputationChangeTarget4)
+			{
+				maxBlockSize=MAX_BLOCK_SIZE_4;
+			}
+			else if(pindex->nHeight<workComputationChangeTarget6)
+			{
+				maxBlockSize=MAX_BLOCK_SIZE_6;
+			}
+			else
+			{
+				maxBlockSize=MAX_BLOCK_SIZE_8;
 			}
 			return;
 		}
@@ -2791,9 +2824,21 @@ void GetMaxBlockSizeByBlock(const CBlock &block,unsigned int &maxBlockSize)
 	{
 		maxBlockSize=MAX_BLOCK_SIZE;
 	}
-	else
+	else if(chainActive.Height()<workComputationChangeTarget2)
 	{
 		maxBlockSize=MAX_BLOCK_SIZE_2;
+	}
+	else if(chainActive.Height()<workComputationChangeTarget4)
+	{
+		maxBlockSize=MAX_BLOCK_SIZE_4;
+	}
+	else if(chainActive.Height()<workComputationChangeTarget6)
+	{
+		maxBlockSize=MAX_BLOCK_SIZE_6;
+	}
+	else
+	{
+		maxBlockSize=MAX_BLOCK_SIZE_8;
 	}
 }
 
@@ -3648,8 +3693,8 @@ bool LoadExternalBlockFile(FILE* fileIn, CDiskBlockPos *dbp)
 
     int nLoaded = 0;
     try {
-
-    	const unsigned int maxBlockSize=std::max(MAX_BLOCK_SIZE,MAX_BLOCK_SIZE_2);
+    	//const unsigned int maxBlockSize=std::max(MAX_BLOCK_SIZE,MAX_BLOCK_SIZE_2);
+    	const unsigned int maxBlockSize=MAX_BLOCK_SIZE_10;
 
     	CBufferedFile blkdat(fileIn, 2*maxBlockSize, maxBlockSize+8, SER_DISK, CLIENT_VERSION);
         uint64_t nStartByte = 0;
@@ -4392,19 +4437,27 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         	{
         		maxBlockSize=MAX_BLOCK_SIZE;
         	}
-        	else
+        	else if(chainActive.Height()<workComputationChangeTarget2)
         	{
         		maxBlockSize=MAX_BLOCK_SIZE_2;
+        	}
+        	else if(chainActive.Height()<workComputationChangeTarget4)
+        	{
+        		maxBlockSize=MAX_BLOCK_SIZE_4;
+        	}
+        	else if(chainActive.Height()<workComputationChangeTarget6)
+        	{
+        		maxBlockSize=MAX_BLOCK_SIZE_6;
+        	}
+        	else
+        	{
+        		maxBlockSize=MAX_BLOCK_SIZE_8;
         	}
 
             // DoS prevention: do not allow mapOrphanTransactions to grow unbounded
             unsigned int nEvicted = LimitOrphanTxSize(maxBlockSize/100);
             if (nEvicted > 0)
                 LogPrint("mempool", "mapOrphan overflow, removed %u tx\n", nEvicted);
-        }
-        else//for testing
-        {
-            LogPrintf("terry: AcceptToMemoryPool return false\n");//for testing
         }
 
         int nDoS = 0;
@@ -4438,17 +4491,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         MarkBlockAsReceived(inv.hash, pfrom->GetId());
 
         CValidationState state;
-        //ProcessBlock(state, pfrom, &block);//for testing
-        if(ProcessBlock(state, pfrom, &block))//for testing
-        {
-        }
-        else
-        {
-            LogPrintf("terry: ProcessBlock return false\n");//for testing
-        }
+        ProcessBlock(state, pfrom, &block);
     }
-
-
     else if (strCommand == "getaddr")
     {
         pfrom->vAddrToSend.clear();
@@ -4456,8 +4500,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         BOOST_FOREACH(const CAddress &addr, vAddr)
             pfrom->PushAddress(addr);
     }
-
-
     else if (strCommand == "mempool")
     {
         LOCK2(cs_main, pfrom->cs_filter);

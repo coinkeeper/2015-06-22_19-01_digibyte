@@ -33,24 +33,28 @@ class CBlockIndex;
 class CBloomFilter;
 class CInv;
 
-//const int64_t nDiffChangeTarget = 67200; // Patch effective @ block 67200//for testing
-const int64_t nDiffChangeTarget = 5; //for testing
-//const int64_t multiAlgoDiffChangeTarget = 145000; // block 145000 where multi-algo work weighting starts 145000//for testing
-const int64_t multiAlgoDiffChangeTarget = 10; //for testing
-//const int64_t alwaysUpdateDiffChangeTarget = 400000; // block 400000 after which all difficulties are updated on every block//for testing
-const int64_t alwaysUpdateDiffChangeTarget = 15; //for testing
-const int64_t workComputationChangeTarget = 20; //for testing
+const int64_t nDiffChangeTarget = 67200; // Patch effective @ block 67200
+const int64_t multiAlgoDiffChangeTarget = 145000; // block 145000 where multi-algo work weighting starts 145000
+const int64_t alwaysUpdateDiffChangeTarget = 400000; // block 400000 after which all difficulties are updated on every block
+const int64_t workComputationChangeTarget = 900000;//2M
+const int64_t workComputationChangeTarget2 = 900000+4204800;//2 years, 4M
+const int64_t workComputationChangeTarget4 = 900000+4204800*2;//4 years, 6M
+const int64_t workComputationChangeTarget6 = 900000+4204800*3;//6 years, 8M
+const int64_t workComputationChangeTarget8 = 900000+4204800*4;//8 years, 10M
 
 static const int64_t patchBlockRewardDuration = 10080; // 10080 blocks main net change
 static const int64_t patchBlockRewardDuration2 = 80160; // 80160 blocks main net change
-//mulitAlgoTargetChange = 145000 located in main.h
 
 /** The maximum allowed size for a serialized block, in bytes (network rule) */
 static const unsigned int MAX_BLOCK_SIZE 	= 1000000;
-static const unsigned int MAX_BLOCK_SIZE_2 	= 10000000;
+static const unsigned int MAX_BLOCK_SIZE_2 	= 2000000;//2M
+static const unsigned int MAX_BLOCK_SIZE_4 	= 4000000;//4M
+static const unsigned int MAX_BLOCK_SIZE_6 	= 6000000;//6M
+static const unsigned int MAX_BLOCK_SIZE_8 	= 8000000;//8M
+static const unsigned int MAX_BLOCK_SIZE_10 = 10000000;//10M
+
 /** Default for -blockmaxsize and -blockminsize, which control the range of sizes the mining code will create **/
 static const unsigned int DEFAULT_BLOCK_MAX_SIZE = MAX_BLOCK_SIZE*3/4;
-static const unsigned int DEFAULT_BLOCK_MAX_SIZE_2 = MAX_BLOCK_SIZE_2*3/4;
 static const unsigned int DEFAULT_BLOCK_MIN_SIZE = 0;
 /** Default for -blockprioritysize, maximum space for zero/low-fee transactions **/
 static const unsigned int DEFAULT_BLOCK_PRIORITY_SIZE = 50000;
@@ -70,8 +74,7 @@ static const unsigned int BLOCKFILE_CHUNK_SIZE = 0x1000000; // 16 MiB
 static const unsigned int UNDOFILE_CHUNK_SIZE = 0x100000; // 1 MiB
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
 static const int COINBASE_MATURITY = 8; // 8 blocks
-//static const int COINBASE_MATURITY_2 = 100; // 100 blocks//for testing
-static const int COINBASE_MATURITY_2 = 2;//for testing
+static const int COINBASE_MATURITY_2 = 100; // 100 blocks
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
 /** Maximum number of script-checking threads allowed */
