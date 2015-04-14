@@ -37,10 +37,10 @@ const int64_t nDiffChangeTarget = 67200; // Patch effective @ block 67200
 const int64_t multiAlgoDiffChangeTarget = 145000; // block 145000 where multi-algo work weighting starts 145000
 const int64_t alwaysUpdateDiffChangeTarget = 400000; // block 400000 after which all difficulties are updated on every block
 const int64_t workComputationChangeTarget = 888888;//2M
-const int64_t workComputationChangeTarget2 = workComputationChangeTarget+4204800;//2 years, 4M
-const int64_t workComputationChangeTarget4 = workComputationChangeTarget+4204800*2;//4 years, 6M
-const int64_t workComputationChangeTarget6 = workComputationChangeTarget+4204800*3;//6 years, 8M
-const int64_t workComputationChangeTarget8 = workComputationChangeTarget+4204800*4;//8 years, 10M
+const int64_t workComputationChangeTarget2 = workComputationChangeTarget+2*365*24*3600/15;//2 years, 4M
+const int64_t workComputationChangeTarget4 = workComputationChangeTarget2+2*365*24*3600/15;//4 years, 6M
+const int64_t workComputationChangeTarget6 = workComputationChangeTarget4+2*365*24*3600/15;//6 years, 8M
+const int64_t workComputationChangeTarget8 = workComputationChangeTarget6+2*365*24*3600/15;//8 years, 10M
 
 static const int64_t patchBlockRewardDuration = 10080; // 10080 blocks main net change
 static const int64_t patchBlockRewardDuration2 = 80160; // 80160 blocks main net change
